@@ -44,6 +44,7 @@ jobs:
           
           echo $DB_FILE >> dbconnect.php
           cat dbconnect.php
+          sudo chmod -R 775 dbconnect.php
           ls -l dbconnect.php
         env:
           DB_FILE : ${{secrets.Secret_text}}
