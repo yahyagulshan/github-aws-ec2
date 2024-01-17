@@ -64,10 +64,9 @@ jobs:
           key: ${{ secrets.KEY }}
       
       - name: Run a multi-line script
-            run: |
-
-              cd /home/ubuntu/
-              mkdir test
+        run: |
+          cd /home/ubuntu/
+          mkdir test
           
           
 
