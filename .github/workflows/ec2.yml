@@ -40,13 +40,11 @@ jobs:
       
       - name: Run a multi-line script
         run: |
-          sudo su -
-          apt-get update && apt-get upgrade -y
-          apt-get install sudo -y
+          
           mkdir ../yahya
-          sudo cp -TR www ../yahya
-          sudo tar -cvf deploy.tar ../yahya/
-          sudo echo $DB_FILE >> dbconnect.php
+          cp -TR www ../yahya
+          tar -cvf deploy.tar ../yahya/
+          echo $DB_FILE >> dbconnect.php
         env:
           DB_FILE : ${{secrets.Secret_text}}
           
