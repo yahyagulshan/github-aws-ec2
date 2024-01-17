@@ -63,6 +63,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.KEY }}
           script: |
+            chmod -R 755 /tmp
             tar -xvf /var/www/deploy.tar -C "/var/www"
             cp /var/www/dbconnect.php /var/www/yahya/application/dbconnect.php
             rm /var/www/deploy.tar
