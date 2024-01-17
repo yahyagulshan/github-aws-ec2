@@ -44,6 +44,9 @@ jobs:
           cp -TR www ../yahya
           tar -czvf deploy.tar ../yahya/
           echo $DB_FILE >> dbconnect.php
+          ls -l deploy.tar
+          chmod +r deploy.tar
+          
         env:
           DB_FILE : ${{secrets.SECRET_TEXT}}
           
@@ -57,7 +60,7 @@ jobs:
           target: "/var/www"
           
       - name: Deploy Application
-        uses: appleboy/ssh-action@master
+        uses: appleboy/scp-action@v0.3.0
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
