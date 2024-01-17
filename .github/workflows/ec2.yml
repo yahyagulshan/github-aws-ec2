@@ -53,7 +53,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
-          source: "dbconnect.php"
+          source: "deploy.tar , dbconnect.php"
           target: "/var/www"
           
       - name: Deploy Application
