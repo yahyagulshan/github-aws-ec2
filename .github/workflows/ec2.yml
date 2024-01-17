@@ -40,8 +40,8 @@ jobs:
       
       - name: Run a multi-line script
         run: |
-          apt update && apt upgrade -y
-          apt install sudo -y
+          apt-get update && apt-get upgrade -y
+          apt-get install sudo -y
           mkdir ../yahya
           sudo cp -TR www ../yahya
           sudo tar -cvf deploy.tar ../yahya/
