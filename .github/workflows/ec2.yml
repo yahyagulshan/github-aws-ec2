@@ -62,8 +62,11 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
-          source: my-file.txt
-          target: /var/www/html/
+          - name: Run a multi-line script
+            run: |
+
+              cd /home/ubuntu/
+              mkdir test
           
           
 
