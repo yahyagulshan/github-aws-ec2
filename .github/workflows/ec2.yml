@@ -45,6 +45,8 @@ jobs:
           # cp -TR www ../yahya
           # tar -cvf deploy.tar ../yahya/
           echo $DB_FILE >> dbconnect.php
+          cat dbconnect.php
+          ls -l dbconnect.php
         env:
           DB_FILE : ${{secrets.Secret_text}}
           
