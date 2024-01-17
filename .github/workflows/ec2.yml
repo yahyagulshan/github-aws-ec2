@@ -1,69 +1,91 @@
-name: ec2-rds Deploy
+# name: ec2-rds Deploy
 
 
-on:
+# on:
   
-  push:
-    branches: [ aws-ec2-rds ]
+#   push:
+#     branches: [ aws-ec2-rds ]
 
   
-  workflow_dispatch:
+#   workflow_dispatch:
 
+
+# jobs:
+ 
+#   build:
+    
+#     runs-on: ubuntu-latest
+
+   
+#     steps:
+     
+#       - uses: actions/checkout@v2
+      
+#       - name: Get Public IP
+#         id: ip
+#         uses: haythem/public-ip@v1.2
+
+#       - name: Configure AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: us-east-1
+          
+      
+#       - name: Update AWS Security Group Rule
+#         run: |
+#           aws ec2 authorize-security-group-ingress --group-id sg-0427701405cb5f8b1 --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+   
+      
+#       - name: Run a multi-line script
+#         run: |
+           
+#            echo "Content for the file" > my-file.txt
+          
+          
+#       #   env:
+#       #     DB_FILE : ${{secrets.Secret_text}}
+          
+#       # - name: Upload files to server
+#       #   uses: appleboy/scp-action@master
+#       #   with:
+#       #     host: ${{ secrets.HOST }}
+#       #     username: ubuntu
+#       #     key: ${{ secrets.KEY }}
+#       #     source: "dbconnect.php"
+#       #     target: "/var/www"
+          
+#       - name: Deploy Application
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.HOST }}
+#           username: ubuntu
+#           key: ${{ secrets.KEY }}
+#           source: my-file.txt
+#           target: /var/www/html/
+          
+          
+
+name: Push-to-EC2
+
+on: push
 
 jobs:
- 
-  build:
-    
+  deploy:
+    name: Push to EC2 Instance
     runs-on: ubuntu-latest
 
-   
     steps:
-     
-      - uses: actions/checkout@v2
-      
-      - name: Get Public IP
-        id: ip
-        uses: haythem/public-ip@v1.2
+      - name: Checkout the code
+        uses: actions/checkout@v1
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          
-      
-      - name: Update AWS Security Group Rule
-        run: |
-          aws ec2 authorize-security-group-ingress --group-id sg-0427701405cb5f8b1 --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-   
-      
-      - name: Run a multi-line script
-        run: |
-           
-           echo "Content for the file" > my-file.txt
-          
-          
-      #   env:
-      #     DB_FILE : ${{secrets.Secret_text}}
-          
-      # - name: Upload files to server
-      #   uses: appleboy/scp-action@master
-      #   with:
-      #     host: ${{ secrets.HOST }}
-      #     username: ubuntu
-      #     key: ${{ secrets.KEY }}
-      #     source: "dbconnect.php"
-      #     target: "/var/www"
-          
-      - name: Deploy Application
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ubuntu
-          key: ${{ secrets.KEY }}
-          source: my-file.txt
-          target: /var/www/html/
-          
-          
-          
+      - name: Deploy to my EC2 instance
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.KEY }}
+          SOURCE: "./"
+          REMOTE_HOST: "ec2-3-84-243-16.compute-1.amazonaws.com"
+          REMOTE_USER: "ubuntu"
+          TARGET: "/home/ubuntu/"
+
