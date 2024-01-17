@@ -69,7 +69,10 @@
 
 name: Push-to-EC2
 
-on: push
+on:
+  
+  push:
+    branches: [ aws-ec2-rds ]
 
 jobs:
   deploy:
