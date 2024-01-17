@@ -62,7 +62,8 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
-          - name: Run a multi-line script
+      
+      - name: Run a multi-line script
             run: |
 
               cd /home/ubuntu/
