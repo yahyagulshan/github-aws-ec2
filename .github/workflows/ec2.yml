@@ -63,7 +63,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.KEY }}
           SOURCE: "./my-file.txt"
-          TARGET: "/var/www/html/"
+          TARGET: "/root"
           
           
           
