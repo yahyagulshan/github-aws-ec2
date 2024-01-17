@@ -51,7 +51,7 @@ jobs:
           DB_FILE : ${{secrets.SECRET_TEXT}}
           
       - name: Upload files to server
-        uses: appleboy/scp-action@master
+        uses: actions/checkout@v2
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
@@ -60,7 +60,7 @@ jobs:
           target: "/var/www"
           
       - name: Deploy Application
-        uses: appleboy/scp-action@v0.3.0
+        uses: actions/checkout@v2
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
