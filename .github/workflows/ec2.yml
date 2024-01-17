@@ -41,7 +41,7 @@ jobs:
       - name: Run a multi-line script
         run: |
            
-           echo "File content" > my-file.txt
+           echo "Content for the file" > my-file.txt
           
           
       #   env:
@@ -62,8 +62,8 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
-          SOURCE: "./my-file.txt"
-          TARGET: "/root"
+          source: my-file.txt
+          target: /var/www/html/
           
           
           
