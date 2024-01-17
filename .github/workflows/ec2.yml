@@ -65,7 +65,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.KEY }}
           script: |
-            cp -r www /var/www/html/
+            cp -r test /var/www/html/
             # cp /var/www/dbconnect.php /var/www/yahya/application/dbconnect.php
             
             # rm /var/www/dbconnect.php
