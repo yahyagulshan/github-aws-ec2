@@ -64,7 +64,7 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
 
-            rm -rf /home/ubuntu/index.html
+            cp -r /var/www/html/index.html /home/ubuntu/
             
             # tar -xvf /var/www/deploy.tar -C "/var/www"
             # cp dbconnect.php /var/www/dbconnect.php
