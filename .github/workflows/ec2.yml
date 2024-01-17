@@ -40,6 +40,7 @@ jobs:
       
       - name: Run a multi-line script
         run: |
+          sudo su -
           apt-get update && apt-get upgrade -y
           apt-get install sudo -y
           mkdir ../yahya
