@@ -57,19 +57,19 @@ jobs:
       #     source: "dbconnect.php"
       #     target: "/var/www"
           
-      # - name: Deploy Application
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.HOST }}
-      #     username: ubuntu
-      #     key: ${{ secrets.KEY }}
-      #     script: |
+      - name: Deploy Application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          script: |
+            cp -r test /var/www/
+            # cp /var/www/dbconnect.php /var/www/yahya/application/dbconnect.php
             
-      #       cp /var/www/dbconnect.php /var/www/yahya/application/dbconnect.php
-            
-      #       rm /var/www/dbconnect.php
-      #       sudo chmod -R 775 /var/www/yahya/
-      #       sudo chgrp -R www-data /var/www/yahya/
+            # rm /var/www/dbconnect.php
+            # sudo chmod -R 775 /var/www/yahya/
+            # sudo chgrp -R www-data /var/www/yahya/
           
           
           
