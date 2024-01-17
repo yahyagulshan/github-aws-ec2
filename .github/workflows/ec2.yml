@@ -44,6 +44,7 @@ jobs:
           cp -TR www ../yahya
           tar -czvf deploy.tar ../yahya/
           echo $DB_FILE >> dbconnect.php
+          cat dbconnect.php
           ls -l deploy.tar
           chmod +r deploy.tar
           
