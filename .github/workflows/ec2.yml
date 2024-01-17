@@ -40,9 +40,9 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          # mkdir ../yahya
-          # cp -TR www ../yahya
-          # tar -cvf deploy.tar ../yahya/
+          mkdir ../yahya
+          cp -TR www ../yahya
+          tar -cvf deploy.tar ../yahya/
           echo $DB_FILE >> dbconnect.php
         env:
           DB_FILE : ${{secrets.SECRET_TEXT}}
@@ -63,8 +63,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.KEY }}
           script: |
-            chmod -R 755 /tmp
-            # tar -xvf /var/www/deploy.tar -C "/var/www"
+            
+            tar -xvf /var/www/deploy.tar -C "/var/www"
             cp dbconnect.php /var/www/dbconnect.php
             rm /var/www/deploy.tar
             rm /var/www/dbconnect.php
