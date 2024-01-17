@@ -1,95 +1,74 @@
-# name: ec2-rds Deploy
+name: Dev Deploy
 
-
-# on:
-  
-#   push:
-#     branches: [ aws-ec2-rds ]
-
-  
-#   workflow_dispatch:
-
-
-# jobs:
- 
-#   build:
-    
-#     runs-on: ubuntu-latest
-
-   
-#     steps:
-     
-#       - uses: actions/checkout@v2
-      
-#       - name: Get Public IP
-#         id: ip
-#         uses: haythem/public-ip@v1.2
-
-#       - name: Configure AWS Credentials
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: us-east-1
-          
-      
-#       - name: Update AWS Security Group Rule
-#         run: |
-#           aws ec2 authorize-security-group-ingress --group-id sg-0427701405cb5f8b1 --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-   
-      
-#       - name: Run a multi-line script
-#         run: |
-           
-#            echo "Content for the file" > my-file.txt
-          
-          
-#       #   env:
-#       #     DB_FILE : ${{secrets.Secret_text}}
-          
-#       # - name: Upload files to server
-#       #   uses: appleboy/scp-action@master
-#       #   with:
-#       #     host: ${{ secrets.HOST }}
-#       #     username: ubuntu
-#       #     key: ${{ secrets.KEY }}
-#       #     source: "dbconnect.php"
-#       #     target: "/var/www"
-          
-#       - name: Deploy Application
-#         uses: appleboy/ssh-action@master
-#         with:
-#           host: ${{ secrets.HOST }}
-#           username: ubuntu
-#           key: ${{ secrets.KEY }}
-      
-#       - name: Run a multi-line script
-#         run: |
-#           mkdir test
-          
-          
-          
-
-name: Deploy to EC2
 
 on:
-  
+ 
   push:
     branches: [ aws-ec2-rds ]
 
+ 
+  workflow_dispatch:
+
+
 jobs:
-  deploy:
+  
+  build:
+    
     runs-on: ubuntu-latest
+
+    
     steps:
-      - uses: actions/checkout@v3  # Checkout repository code
-      - name: Transfer code to EC2
+     
+      - uses: actions/checkout@v2
+      
+      - name: Get Public IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          
+     
+      - name: Update AWS Security Group Rule
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id 	sg-0427701405cb5f8b1 --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+   
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          mkdir ../yahya
+          cp -TR www ../yahya
+          tar -cvf deploy.tar ../yahya/
+          echo $DB_FILE >> dbconnect.php
+        env:
+          DB_FILE : ${{secrets.SECRET_TEXT}}
+          
+      - name: Upload files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
-          # passphrase: ${{ secrets.EC2_PASSPHRASE }}  # Optional for encrypted keys
-          source: .  # Copy all files from the root of the repository
-          target: /var/www/
-
-
+          source: "deploy.tar, dbconnect.php"
+          target: "/var/www"
+          
+      - name: Deploy Application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          script: |
+            tar -xvf /var/www/deploy.tar -C "/var/www"
+            cp /var/www/dbconnect.php /var/www/yahya/application/dbconnect.php
+            rm /var/www/deploy.tar
+            rm /var/www/dbconnect.php
+            sudo chmod -R 775 /var/www/yahya/
+            sudo chgrp -R www-data /var/www/yahya/
+          
+          
+          
