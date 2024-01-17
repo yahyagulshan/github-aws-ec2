@@ -41,9 +41,9 @@ jobs:
       - name: Run a multi-line script
         run: |
           mkdir ../yahya
-          cp -TR www ../yahya
-          tar -cvf deploy.tar ../yahya/
-          echo $DB_FILE >> dbconnect.php
+          sudo cp -TR www ../yahya
+          sudo tar -cvf deploy.tar ../yahya/
+          sudo echo $DB_FILE >> dbconnect.php
         env:
           DB_FILE : ${{secrets.Secret_text}}
           
