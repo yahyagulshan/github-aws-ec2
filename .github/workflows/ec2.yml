@@ -67,15 +67,16 @@ jobs:
           username: ubuntu
           key: ${{ secrets.KEY }}
           script: |
-
+            
+            mkdir -p /var/www/html/test-dir
             
             
-            tar -xvzf /var/www/deploy.tar -C "/var/www"
-            cp dbconnect.php /var/www/dbconnect.php
-            rm /var/www/deploy.tar
-            rm /var/www/dbconnect.php
-            sudo chmod -R 775 /var/www/yahya/
-            sudo chgrp -R www-data /var/www/yahya/
+            # tar -xvzf /var/www/deploy.tar -C "/var/www"
+            # cp dbconnect.php /var/www/dbconnect.php
+            # rm /var/www/deploy.tar
+            # rm /var/www/dbconnect.php
+            # sudo chmod -R 775 /var/www/yahya/
+            # sudo chgrp -R www-data /var/www/yahya/
           
           
           
