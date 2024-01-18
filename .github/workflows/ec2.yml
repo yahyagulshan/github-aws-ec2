@@ -19,7 +19,7 @@ jobs:
     
     steps:
      
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       
       - name: Get Public IP
         id: ip
@@ -52,7 +52,7 @@ jobs:
           DB_FILE : ${{secrets.SECRET_TEXT}}
           
       - name: Upload files to server
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
@@ -61,7 +61,7 @@ jobs:
           target: "/var/www"
           
       - name: Deploy Application
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
