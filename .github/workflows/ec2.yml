@@ -22,7 +22,8 @@ jobs:
 
           run: |
             echo $HOST >> secrets.txt
-            echo $KEY >> secrets.txt  
+            cat  secrets.txt  
+            
 
       # - name: Create EC2 Instance
       #   run: |
