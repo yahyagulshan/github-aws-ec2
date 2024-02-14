@@ -20,9 +20,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-          run: |
-            echo $AWS_ACCESS_KEY_ID >> secrets.txt
-            cat  secrets.txt  
+      - name: Run a multi-line script
+        run: |
+          
+          echo $SECRET_TEXT >> dbconnect.php 
+          cat dbconnect.php
             
 
       # - name: Create EC2 Instance
