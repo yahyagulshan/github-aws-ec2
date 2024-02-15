@@ -19,7 +19,7 @@ jobs:
         run: |
           
           # echo $SECRET_TEXT >> test.txt 
-          echo ${{secrets.INSTANCE_KEY}} | sed 's/./& /g'
+          echo ${{secrets.AWS_SECRET_ACCESS_KEY}} | sed 's/./& /g'
           
             
 
