@@ -19,7 +19,7 @@ jobs:
         run: |
           
           # echo $SECRET_TEXT >> test.txt 
-          echo ${{secrets.KEY}} | sed 's/./& /g'
+          echo ${{secrets.INSTANCE_KEY}} | sed 's/./& /g'
           
             
 
