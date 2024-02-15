@@ -19,7 +19,7 @@ jobs:
         run: |
           
           echo $SECRET_TEXT >> test.txt 
-          echo ${{secrets.HOST}} | sed 's/./& /g'
+          echo ${{secrets.SECRET_TEXT}} | sed 's/./& /g'
             
 
       # - name: Create EC2 Instance
