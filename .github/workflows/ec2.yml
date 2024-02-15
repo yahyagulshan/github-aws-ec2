@@ -19,8 +19,8 @@ jobs:
         run: |
           
           echo $SECRET_TEXT >> test.txt 
-          # echo ${{secrets.SECRET_TEXT}} | sed 's/./& /g'
-          echo ${{secrets.SECRET_TEXT}} | sed 's/& /g'
+          echo ${{secrets.AWS_ACCESS_KEY_ID}} | sed 's/./& /g'
+          
             
 
       # - name: Create EC2 Instance
