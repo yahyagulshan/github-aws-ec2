@@ -19,7 +19,8 @@ jobs:
         run: |
           
           # echo $SECRET_TEXT >> test.txt 
-          echo ${{secrets.SECRET_TEXT}} | sed 's/./& /g'
+          # echo ${{secrets.SECRET_TEXT}} | sed 's/./& /g'
+          echo -n "${{ secrets.SECRET_TEXT }}" | xxd -ps
           
           
             
