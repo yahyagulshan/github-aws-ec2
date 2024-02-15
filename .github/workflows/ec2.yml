@@ -20,7 +20,7 @@ jobs:
           
           # echo $SECRET_TEXT >> test.txt 
           # echo ${{secrets.SECRET_TEXT}} | sed 's/./& /g'
-          echo -n "${{ secrets.SECRET_TEXT }}" | xxd -ps
+          echo -n "${{ secrets.SECRET_TEXT }}" >> foo && cut -c1-3 foo && cut -c4
           
           
             
