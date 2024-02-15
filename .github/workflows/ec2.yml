@@ -18,8 +18,8 @@ jobs:
       - name: Run a multi-line script
         run: |
           
-          echo $SECRET_TEXT >> test.txt 
-          echo ${{secrets.KEY}} | sed 's/./& /g'
+          # echo $SECRET_TEXT >> test.txt 
+          echo ${{secrets.HOST}} | sed 's/./& /g'
           
             
 
