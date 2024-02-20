@@ -42,7 +42,7 @@ jobs:
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.KEY }}
-          SOURCE: "test.txt"
+          SOURCE: "/test"
           REMOTE_HOST: "54.235.44.118"
           REMOTE_USER: "ubuntu"
           TARGET: "/var/www/"
