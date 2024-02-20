@@ -29,15 +29,15 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
       - uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm dependencies
-        run: npm install
-      - name: Build
-        run: |
-          npm run build -- -test
+      # - name: Use Node.js ${{ matrix.node-version }}
+      #   uses: actions/setup-node@v1
+      #   with:
+      #     node-version: ${{ matrix.node-version }}
+      # - name: npm dependencies
+      #   run: npm install
+      # - name: Build
+      #   run: |
+      #     npm run build -- -test
       - name: Deploy to my EC2 instance
         uses: easingthemes/ssh-deploy@main
         env:
