@@ -41,14 +41,14 @@ jobs:
    
       
           
-      - name: Upload files to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ubuntu
-          key: ${{ secrets.KEY }}
-          source: "test.txt"
-          target: "/var/www"
+      # - name: Upload files to server
+      #   uses: appleboy/scp-action@master
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ubuntu
+      #     key: ${{ secrets.KEY }}
+      #     source: "test.txt"
+      #     target: "/var/www"
 
       - name: Deploy Application
         uses: appleboy/ssh-action@master
@@ -58,7 +58,7 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             
-            cp test.txt /var/www/test.txt
+            sudo cp test.txt /var/www/test.txt
                
       
            
