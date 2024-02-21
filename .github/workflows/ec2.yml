@@ -29,23 +29,15 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
       - uses: actions/checkout@v2
 
-      # - name: Use Node.js ${{ matrix.node-version }}
-      #   uses: actions/setup-node@v1
-      #   with:
-      #     node-version: ${{ matrix.node-version }}
-      # - name: npm dependencies
-      #   run: npm install
-      # - name: Build
-      #   run: |
-      #     npm run build -- -test
+
       - name: Deploy to my EC2 instance
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.KEY }}
           SOURCE: "."
-          REMOTE_HOST: "54.235.44.118"
-          REMOTE_USER: "ubuntu"
-          TARGET: "/var/www/"
+          REMOTE_HOST: "secrets.HOST"
+          REMOTE_USER: "secrets.USER"
+          TARGET: "/root/test/"
       - name: Remove Github Actions IP from security group
         run: |
           aws ec2 revoke-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
