@@ -1,0 +1,92 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Test Deploy
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ upload-code ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
+      - name: Get Public IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Setting environment variables..
+        run: |
+          echo "AWS_DEFAULT_REGION=us-east-1" >> $GITHUB_ENV
+          echo "AWS_SG_NAME=web-app-sg" >> $GITHUB_ENV
+      - name: Add Github Actions IP to Security group
+        run: |
+          aws ec2 authorize-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+      - uses: actions/checkout@v2
+          
+      
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          mkdir ../test
+          cp -TR www ../test
+          tar -cvf deploy.tar ../test/
+          echo $SECRET_FILE >> dbconnect.php
+        env:
+          SECRET_FILE : ${{secrets.SECRET_FILE}}
+          
+      - name: Upload files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          source: "deploy.tar, dbconnect.php"
+          target: "/var/www"
+          
+      - name: Deploy Application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          script: |
+            tar -xvf /var/www/deploy.tar -C "/var/www"
+            cp /var/www/dbconnect.php /var/www/
+            rm /var/www/deploy.tar
+            rm /var/www/dbconnect.php
+            sudo chmod -R 775 /var/www/
+            sudo chgrp -R www-data /var/www/
+      - name: Remove Github Actions IP from security group
+        run: |
+          aws ec2 revoke-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+        if: always()
+          
+          
+          
