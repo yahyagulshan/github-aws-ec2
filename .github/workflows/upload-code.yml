@@ -74,9 +74,9 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             tar -xvf /var/www/deploy.tar -C "/var/www"
-            cp /var/www/dbconnect.php /var/www/
+            
             rm /var/www/deploy.tar
-            rm /var/www/dbconnect.php
+            
            
       - name: Remove Github Actions IP from security group
         run: |
