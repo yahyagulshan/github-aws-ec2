@@ -1,4 +1,4 @@
-name: Example Workflow
+name: Create EC2 Instance
 
 on:
   push:
@@ -6,17 +6,32 @@ on:
       - cat-secrets
 
 jobs:
-  example_job:
+  create-instance:
     runs-on: ubuntu-latest
-    
-    env:
-      MY_SECRET: ${{ secrets.SECRET_VALUE }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Use secret in a step
-      run: |
-        echo "Using secret: $MY_SECRET"
-        # Perform other actions using the secret
+
+
+      - name: Run a multi-line script
+        run: |
+
+          # echo $SECRET_TEXT >> test.txt 
+          # echo ${{secrets.SECRET_VALUE}} | sed 's/./& /g'
+          echo ${{secrets.SECRET_TEXT }} | sed 's/./& /g'
+          # echo -n "${{ secrets.SECRET_VALUE }}" >> foo && cut -c1-3 foo && cut -c15
+ 
+          
+          
+            
+      # - name: Create EC2 Instance
+      #   run: |
+      #     aws ec2 run-instances \
+      #       --image-id ami-0261755bbcb8c4a84 \
+      #       --instance-type t2.micro \
+      #       --key-name yahya-test-key-pair \
+      #       --subnet-id subnet-01c079ede545c1bb7 \
+      #       --security-group-ids sg-014ddc6112fb66838 \
+      #       --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=yahya-test-instance}]'
