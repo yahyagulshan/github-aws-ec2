@@ -35,7 +35,7 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.KEY }}
           SOURCE: "."
-          REMOTE_HOST_ID: ${{ secrets.HOST }}
+          REMOTE_HOST: ${{ secrets.HOST }}
          # REMOTE_HOST: ${{ secrets.HOST }}
           REMOTE_USER: ${{ secrets.USER }}
           TARGET: "/var/www/"
