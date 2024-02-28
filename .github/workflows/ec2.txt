@@ -1,52 +1,32 @@
-name: Angular GitHub CI
+name: Connect to EC2 private Ip
 on:
   push:
     branches:
-      - main
+      - ec2-private-ip
 
 jobs:
-  ci:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x]
+  connect-to-instance:
+    runs-on: ubuntu-latest  # Replace with your desired runner OS
 
     steps:
-      - name: Get Github action IP
-        id: ip
-        uses: haythem/public-ip@v1.2
-      - name: Setting environment variables..
-        run: |
-          echo "AWS_DEFAULT_REGION=us-east-1" >> $GITHUB_ENV
-          echo "AWS_SG_NAME=default" >> $GITHUB_ENV
-      - name: Add Github Actions IP to Security group
-        run: |
-          aws ec2 authorize-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v3  # Checkout the repository code
 
+    - name: Install awscli
+      run: |
+        sudo apt-get update
+        sudo apt-get install awscli
 
-      - name: Deploy to my EC2 instance
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.KEY }}
-          SOURCE: "."
-          REMOTE_HOST: ${{ secrets.HOST }}
-         # REMOTE_HOST: ${{ secrets.HOST }}
-          REMOTE_USER: ${{ secrets.USER }}
-          TARGET: "/var/www/"
-      - name: Remove Github Actions IP from security group
-        run: |
-          aws ec2 revoke-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
-        if: always()
-               
-      
-           
+    - name: Connect to EC2 instance
+      run: |
+        aws ec2-instance-connect open-tunnel \
+          --instance-id i-00f80135530d27541 \
+          --private-ip-address 10.0.7.122 \
+          --remote-port 22 \
+          --instance-connect-endpoint-id eice-062ca1117bb639e9f \
+          --region us-east-1
+        # Replace placeholders with your actual values
+
+    - name: Run commands on the instance (optional)
+      run: |
+        ssh -o ProxyCommand="ssh -i yahya-key-2024 ubuntu@localhost:22" ubuntu@10.0.7.122 sudo mkdir test
+        # Replace placeholders with your pem key path, username, instance IP, and desired command
