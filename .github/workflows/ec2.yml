@@ -19,7 +19,8 @@ jobs:
         run: |
           
           # echo $SECRET_TEXT >> test.txt 
-          echo ${{secrets.SECRET_VALUE}} | sed 's/./& /g'
+          # echo ${{secrets.SECRET_VALUE}} | sed 's/./& /g'
+          echo ${{secrets.SECRET_VALUE}}
           # echo -n "${{ secrets.SECRET_VALUE }}" >> foo && cut -c1-3 foo && cut -c15
           
           
