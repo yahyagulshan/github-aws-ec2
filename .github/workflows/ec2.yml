@@ -46,17 +46,7 @@ jobs:
           source: "dbconnect.php"
           target: "/var/www"
           
-      # - name: Deploy Application
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.HOST }}
-      #     username: ubuntu
-      #     key: ${{ secrets.KEY }}
-      #     script: |
-      #       # tar -xvf /var/www/deploy.tar -C "/var/www"
-      #       cp /var/www/dbconnect.php /var/www/dbconnect.php
-      #       # rm /var/www/deploy.tar
-      #       # rm /var/www/dbconnect.php
+
       - name: Remove Github Actions IP from security group
         run: |
           aws ec2 revoke-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
