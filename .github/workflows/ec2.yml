@@ -49,9 +49,9 @@ jobs:
       - name: Deploy Application
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.DEV_HOST }}
+          host: ${{ secrets.HOST }}
           username: ubuntu
-          key: ${{ secrets.DEV_KEY }}
+          key: ${{ secrets.KEY }}
           script: |
             # tar -xvf /var/www/deploy.tar -C "/var/www"
             cp /var/www/dbconnect.php /var/www/dbconnect.php
