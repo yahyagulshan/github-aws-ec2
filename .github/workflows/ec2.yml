@@ -2,7 +2,7 @@ name: Angular GitHub CI
 on:
   push:
     branches:
-      - main
+      - deploy_secret_to_server_folder
 
 jobs:
   ci:
@@ -19,7 +19,7 @@ jobs:
       - name: Setting environment variables..
         run: |
           echo "AWS_DEFAULT_REGION=us-east-1" >> $GITHUB_ENV
-          echo "AWS_SG_NAME=default" >> $GITHUB_ENV
+          echo "AWS_SG_NAME=web-app-sg" >> $GITHUB_ENV
       - name: Add Github Actions IP to Security group
         run: |
           aws ec2 authorize-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
@@ -27,18 +27,36 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
-      - uses: actions/checkout@v2
-
-
-      - name: Deploy to my EC2 instance
-        uses: easingthemes/ssh-deploy@main
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          mkdir ../test
+          cp -TR 2nd-test-folder ../test
+          tar -cvf deploy.tar ../test/
+          echo $DB_FILE >> dbconnect.php
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.KEY }}
-          SOURCE: "."
-          REMOTE_HOST: ${{ secrets.HOST }}
-         # REMOTE_HOST: ${{ secrets.HOST }}
-          REMOTE_USER: ${{ secrets.USER }}
-          TARGET: "/var/www/"
+          DB_FILE : ${{secrets.SECRET_FILE}}
+          
+      - name: Upload files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          source: "deploy.tar, dbconnect.php"
+          target: "/var/www"
+          
+      - name: Deploy Application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ubuntu
+          key: ${{ secrets.DEV_KEY }}
+          script: |
+            tar -xvf /var/www/deploy.tar -C "/var/www"
+            cp /var/www/dbconnect.php /var/www/dbconnect.php
+            rm /var/www/deploy.tar
+            rm /var/www/dbconnect.php
       - name: Remove Github Actions IP from security group
         run: |
           aws ec2 revoke-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
