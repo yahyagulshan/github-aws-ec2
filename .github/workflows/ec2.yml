@@ -30,10 +30,8 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          mkdir ../test
-          # cp -TR 2nd-test-folder ../test
-          # tar -cvf deploy.tar ../test/
-          echo $DB_FILE >> dbconnect.php
+          
+          echo $DB_FILE >> secrettext.php
         env:
           DB_FILE : ${{secrets.SECRET_FILE}}
           
@@ -43,7 +41,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
-          source: "dbconnect.php"
+          source: "secrettext.php"
           target: "/var/www"
           
 
