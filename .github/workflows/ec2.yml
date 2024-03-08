@@ -1,58 +1,42 @@
-name: Angular GitHub CI
+name: Deploy to EC2 Instance
 on:
   push:
     branches:
-      - deploy_secret_to_server_folder
-
+      - deploy_code_on_private_ip_instance
 jobs:
-  ci:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x]
-
+  deploy:
+    runs-on: ubuntu-latest  # Use a Linux runner
     steps:
-      - name: Get Github action IP
-        id: ip
-        uses: haythem/public-ip@v1.2
-      - name: Setting environment variables..
-        run: |
-          echo "AWS_DEFAULT_REGION=${{secrets.AWS_REGION}}" >> $GITHUB_ENV
-          echo "AWS_SG_NAME=${{secrets.SG_NAME}}" >> $GITHUB_ENV
-      - name: Add Github Actions IP to Security group
-        run: |
-          aws ec2 authorize-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          
-          echo $DB_FILE >> secrettext.php
-        env:
-          DB_FILE : ${{secrets.SECRET_FILE}}
-          
-      - name: Upload files to server
-        uses: appleboy/scp-action@master
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          host: ${{ secrets.HOST }}
-          username: ubuntu
-          key: ${{ secrets.KEY }}
-          source: "secrettext.php"
-          target: "/var/www"
-          
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: <us-east-1>
 
-      - name: Remove Github Actions IP from security group
+      - name: Install tools
         run: |
-          aws ec2 revoke-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
-        if: always()
+         sudo apt-get update
+         sudo apt-get install -y ssh rsync awscli    
+
+      - name: Connect to EC2 instance
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@172.31.95.238 "sudo apt-get update"
+
+      - name: Transfer code
+        run: |
+          rsync -avz ./ ubuntu@172.31.95.238:/tmp/
+
+      # - name: Run installation or startup commands
+      #   run: |
+      #     ssh ubuntu@172.31.95.238 "cd /path/to/deploy/directory && npm install && npm start"
+    
+    
+   
+    
+
+
+    
                
       
            
