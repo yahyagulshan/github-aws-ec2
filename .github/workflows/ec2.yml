@@ -6,7 +6,7 @@ name: Dev Deploy
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ aws-ec2-rds ]
+    branches: [ ohio ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -42,10 +42,10 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          mkdir ../warco
-          cp -TR www ../warco
-          tar -cvf deploy.tar ../warco/
-          echo $DB_FILE >> dbconnect.php
+          mkdir ../feature
+          cp -TR www ../feature
+          tar -cvf deploy.tar ../feature/
+          echo $DB_FILE >> test.php
         env:
           DB_FILE : ${{secrets.SECRET_TEXT}}
           
@@ -55,7 +55,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
-          source: "deploy.tar, dbconnect.php"
+          source: "deploy.tar, test.php"
           target: "/var/www"
           
       - name: Deploy Application
@@ -66,11 +66,11 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             tar -xvf /var/www/deploy.tar -C "/var/www"
-            cp /var/www/dbconnect.php /var/www/warco/application/dbconnect.php
+            cp /var/www/test.php /var/www/feature/application/test.php
             rm /var/www/deploy.tar
-            rm /var/www/dbconnect.php
-            sudo chmod -R 775 /var/www/warco/
-            sudo chgrp -R www-data /var/www/warco/
+            rm /var/www/test.php
+            sudo chmod -R 775 /var/www/feature/
+            sudo chgrp -R www-data /var/www/feature/
           
           
           
